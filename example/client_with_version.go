@@ -3,12 +3,9 @@ package main
 import (
 	"os"
 
-	shopify "github.com/r0busta/go-shopify-graphql/v7"
-	graphqlclient "github.com/r0busta/go-shopify-graphql/v7/graphql"
+	"github.com/r0busta/go-shopify-graphql/v7"
 )
 
 func clientWithVersion() *shopify.Client {
-	gqlClient := graphqlclient.NewClient(os.Getenv("STORE_NAME"), graphqlclient.WithToken(os.Getenv("STORE_ACCESS_TOKEN")), graphqlclient.WithVersion("2022-10"))
-
-	return shopify.NewClient(shopify.WithGraphQLClient(gqlClient))
+	return shopify.NewClient(os.Getenv("STORE_NAME"), shopify.WithToken(os.Getenv("STORE_ACCESS_TOKEN")), shopify.WithVersion("2022-10"))
 }
