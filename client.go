@@ -99,10 +99,6 @@ func NewClientWithToken(accessToken string, storeName string) *Client {
 	return NewClient(storeName, WithToken(accessToken), WithVersion(defaultShopifyAPIVersion))
 }
 
-func buildAPIEndpoint(shopName string, apiPathPrefix string) string {
-	return fmt.Sprintf("%s://%s.%s/%s/%s", defaultAPIProtocol, shopName, shopifyBaseDomain, apiPathPrefix, defaultAPIEndpoint)
-}
-
 func (c *Client) GraphQLClient() graphql.GraphQL {
 	return c.gql
 }
@@ -112,11 +108,13 @@ func (c *Client) Mutate(ctx context.Context, m interface{}, variables map[string
 	for {
 		r, err := c.gql.Mutate(ctx, m, variables)
 		if err != nil {
-			wait := CalculateWaitTime(r.Extensions)
-			if wait > 0 {
-				retries++
-				time.Sleep(wait)
-				continue
+			if r != nil {
+				wait := CalculateWaitTime(r.Extensions)
+				if wait > 0 {
+					retries++
+					time.Sleep(wait)
+					continue
+				}
 			}
 			if IsConnectionError(err) {
 				retries++
@@ -139,11 +137,13 @@ func (c *Client) Query(ctx context.Context, q interface{}, variables map[string]
 	for {
 		r, err := c.gql.Query(ctx, q, variables)
 		if err != nil {
-			wait := CalculateWaitTime(r.Extensions)
-			if wait > 0 {
-				retries++
-				time.Sleep(wait)
-				continue
+			if r != nil {
+				wait := CalculateWaitTime(r.Extensions)
+				if wait > 0 {
+					retries++
+					time.Sleep(wait)
+					continue
+				}
 			}
 			if uerr, isURLErr := err.(*url.Error); isURLErr && (uerr.Timeout() || uerr.Temporary()) || IsConnectionError(err) {
 				retries++
@@ -166,11 +166,13 @@ func (c *Client) QueryString(ctx context.Context, q string, variables map[string
 	for {
 		r, err := c.gql.QueryString(ctx, q, variables, out)
 		if err != nil {
-			wait := CalculateWaitTime(r.Extensions)
-			if wait > 0 {
-				retries++
-				time.Sleep(wait)
-				continue
+			if r != nil {
+				wait := CalculateWaitTime(r.Extensions)
+				if wait > 0 {
+					retries++
+					time.Sleep(wait)
+					continue
+				}
 			}
 			if uerr, isURLErr := err.(*url.Error); isURLErr && (uerr.Timeout() || uerr.Temporary()) || IsConnectionError(err) {
 				retries++
