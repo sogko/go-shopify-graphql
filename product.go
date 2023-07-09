@@ -10,8 +10,8 @@ import (
 
 //go:generate mockgen -destination=./mock/product_service.go -package=mock . ProductService
 type ProductService interface {
-	List(ctx context.Context, query string) ([]model.Product, error)
-	ListAll(ctx context.Context) ([]model.Product, error)
+	List(ctx context.Context, query string) ([]*model.Product, error)
+	ListAll(ctx context.Context) ([]*model.Product, error)
 
 	Get(ctx context.Context, id string) (*model.Product, error)
 
@@ -98,7 +98,7 @@ const productBaseQuery = `
 	productType
 	vendor
 	totalInventory
-	onlineStoreUrl	
+	onlineStoreUrl
 	descriptionHtml
 	seo{
 		description
@@ -142,7 +142,7 @@ var productQuery = fmt.Sprintf(`
 				inventoryQuantity
 				inventoryItem{
 					id
-					legacyResourceId							
+					legacyResourceId
 				}
 				availableForSale
 			}
@@ -192,7 +192,7 @@ var productBulkQuery = fmt.Sprintf(`
 				inventoryQuantity
 				inventoryItem{
 					id
-					legacyResourceId							
+					legacyResourceId
 				}
 				availableForSale
 			}
@@ -200,7 +200,7 @@ var productBulkQuery = fmt.Sprintf(`
 	}
 `, productBaseQuery)
 
-func (s *ProductServiceOp) ListAll(ctx context.Context) ([]model.Product, error) {
+func (s *ProductServiceOp) ListAll(ctx context.Context) ([]*model.Product, error) {
 	q := fmt.Sprintf(`
 		{
 			products{
@@ -213,16 +213,16 @@ func (s *ProductServiceOp) ListAll(ctx context.Context) ([]model.Product, error)
 		}
 	`, productBulkQuery)
 
-	res := []model.Product{}
+	res := []*model.Product{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
-		return []model.Product{}, err
+		return nil, err
 	}
 
 	return res, nil
 }
 
-func (s *ProductServiceOp) List(ctx context.Context, query string) ([]model.Product, error) {
+func (s *ProductServiceOp) List(ctx context.Context, query string) ([]*model.Product, error) {
 	q := fmt.Sprintf(`
 		{
 			products(query: "$query"){
@@ -237,7 +237,7 @@ func (s *ProductServiceOp) List(ctx context.Context, query string) ([]model.Prod
 
 	q = strings.ReplaceAll(q, "$query", query)
 
-	res := []model.Product{}
+	res := []*model.Product{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
 		return nil, fmt.Errorf("bulk query: %w", err)

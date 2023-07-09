@@ -10,7 +10,7 @@ import (
 
 //go:generate mockgen -destination=./mock/collection_service.go -package=mock . CollectionService
 type CollectionService interface {
-	ListAll(ctx context.Context) ([]model.Collection, error)
+	ListAll(ctx context.Context) ([]*model.Collection, error)
 
 	Get(ctx context.Context, id string) (*model.Collection, error)
 
@@ -44,7 +44,7 @@ type mutationCollectionUpdate struct {
 
 var collectionQuery = `
 	id
-	handle	
+	handle
 	title
 
 	products(first:250, after: $cursor){
@@ -56,17 +56,17 @@ var collectionQuery = `
 		}
 		pageInfo{
 			hasNextPage
-		}		
-	}	
+		}
+	}
 `
 
 var collectionBulkQuery = `
 	id
-	handle	
+	handle
 	title
 `
 
-func (s *CollectionServiceOp) ListAll(ctx context.Context) ([]model.Collection, error) {
+func (s *CollectionServiceOp) ListAll(ctx context.Context) ([]*model.Collection, error) {
 	q := fmt.Sprintf(`
 		{
 			collections{
@@ -79,7 +79,7 @@ func (s *CollectionServiceOp) ListAll(ctx context.Context) ([]model.Collection, 
 		}
 	`, collectionBulkQuery)
 
-	res := []model.Collection{}
+	res := []*model.Collection{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
 		return nil, fmt.Errorf("bulk query: %w", err)

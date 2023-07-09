@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	graphql "github.com/vinhluan/go-graphql-client"
+	"github.com/vinhluan/go-graphql-client"
 	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
@@ -13,10 +13,10 @@ import (
 type OrderService interface {
 	Get(ctx context.Context, id graphql.ID) (*model.Order, error)
 
-	List(ctx context.Context, opts ListOptions) ([]model.Order, error)
-	ListAll(ctx context.Context) ([]model.Order, error)
+	List(ctx context.Context, opts ListOptions) ([]*model.Order, error)
+	ListAll(ctx context.Context) ([]*model.Order, error)
 
-	ListAfterCursor(ctx context.Context, opts ListOptions) ([]model.Order, *string, *string, error)
+	ListAfterCursor(ctx context.Context, opts ListOptions) ([]*model.Order, *string, *string, error)
 
 	Update(ctx context.Context, input model.OrderInput) error
 }
@@ -105,7 +105,7 @@ const orderBaseQuery = `
 				currencyCode
 			}
 		}
-	}	
+	}
 `
 
 const orderLightQuery = `
@@ -149,18 +149,18 @@ fragment lineItem on LineItem {
 	fulfillmentStatus
 	product{
 		id
-		legacyResourceId										
+		legacyResourceId
 	}
 	vendor
 	title
 	variantTitle
 	variant{
 		id
-		legacyResourceId	
+		legacyResourceId
 		selectedOptions{
 			name
 			value
-		}									
+		}
 	}
 	originalTotalSet{
 		presentmentMoney{
@@ -244,13 +244,13 @@ func (s *OrderServiceOp) Get(ctx context.Context, id graphql.ID) (*model.Order, 
 											totalQuantity
 											lineItem{
 												sku
-											}								
+											}
 										}
 									}
 								}
 							}
 						}
-					}					
+					}
 				}
 			}
 		}
@@ -273,7 +273,7 @@ func (s *OrderServiceOp) Get(ctx context.Context, id graphql.ID) (*model.Order, 
 	return out.Order, nil
 }
 
-func (s *OrderServiceOp) List(ctx context.Context, opts ListOptions) ([]model.Order, error) {
+func (s *OrderServiceOp) List(ctx context.Context, opts ListOptions) ([]*model.Order, error) {
 	q := fmt.Sprintf(`
 		{
 			orders(query: "$query"){
@@ -297,7 +297,7 @@ func (s *OrderServiceOp) List(ctx context.Context, opts ListOptions) ([]model.Or
 
 	q = strings.ReplaceAll(q, "$query", opts.Query)
 
-	res := []model.Order{}
+	res := []*model.Order{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
 		return nil, fmt.Errorf("bulk query: %w", err)
@@ -306,7 +306,7 @@ func (s *OrderServiceOp) List(ctx context.Context, opts ListOptions) ([]model.Or
 	return res, nil
 }
 
-func (s *OrderServiceOp) ListAll(ctx context.Context) ([]model.Order, error) {
+func (s *OrderServiceOp) ListAll(ctx context.Context) ([]*model.Order, error) {
 	q := fmt.Sprintf(`
 		{
 			orders(query: "$query"){
@@ -328,7 +328,7 @@ func (s *OrderServiceOp) ListAll(ctx context.Context) ([]model.Order, error) {
 		%s
 	`, orderBaseQuery, lineItemFragment)
 
-	res := []model.Order{}
+	res := []*model.Order{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
 		return nil, fmt.Errorf("bulk query: %w", err)
@@ -337,7 +337,7 @@ func (s *OrderServiceOp) ListAll(ctx context.Context) ([]model.Order, error) {
 	return res, nil
 }
 
-func (s *OrderServiceOp) ListAfterCursor(ctx context.Context, opts ListOptions) ([]model.Order, *string, *string, error) {
+func (s *OrderServiceOp) ListAfterCursor(ctx context.Context, opts ListOptions) ([]*model.Order, *string, *string, error) {
 	q := fmt.Sprintf(`
 		query orders($query: String, $first: Int, $last: Int, $before: String, $after: String, $reverse: Boolean) {
 			orders(query: $query, first: $first, last: $last, before: $before, after: $after, reverse: $reverse){
@@ -357,7 +357,7 @@ func (s *OrderServiceOp) ListAfterCursor(ctx context.Context, opts ListOptions) 
 				}
 				pageInfo{
 					hasNextPage
-				}				
+				}
 			}
 		}
 
@@ -397,14 +397,14 @@ func (s *OrderServiceOp) ListAfterCursor(ctx context.Context, opts ListOptions) 
 		return nil, nil, nil, fmt.Errorf("query: %w", err)
 	}
 
-	res := []model.Order{}
+	res := []*model.Order{}
 	var firstCursor *string
 	var lastCursor *string
 	if len(out.Orders.Edges) > 0 {
 		firstCursor = &out.Orders.Edges[0].Cursor
 		lastCursor = &out.Orders.Edges[len(out.Orders.Edges)-1].Cursor
 		for _, o := range out.Orders.Edges {
-			res = append(res, *o.OrderQueryResult)
+			res = append(res, o.OrderQueryResult)
 		}
 	}
 

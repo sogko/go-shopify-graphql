@@ -11,8 +11,8 @@ import (
 
 //go:generate mockgen -destination=./mock/metafield_service.go -package=mock . MetafieldService
 type MetafieldService interface {
-	ListAllShopMetafields(ctx context.Context) ([]model.Metafield, error)
-	ListShopMetafieldsByNamespace(ctx context.Context, namespace string) ([]model.Metafield, error)
+	ListAllShopMetafields(ctx context.Context) ([]*model.Metafield, error)
+	ListShopMetafieldsByNamespace(ctx context.Context, namespace string) ([]*model.Metafield, error)
 
 	GetShopMetafieldByKey(ctx context.Context, namespace, key string) (*model.Metafield, error)
 
@@ -32,7 +32,7 @@ type mutationMetafieldDelete struct {
 	} `graphql:"metafieldDelete(input: $input)" json:"metafieldDelete"`
 }
 
-func (s *MetafieldServiceOp) ListAllShopMetafields(ctx context.Context) ([]model.Metafield, error) {
+func (s *MetafieldServiceOp) ListAllShopMetafields(ctx context.Context) ([]*model.Metafield, error) {
 	q := `
 		{
 			shop{
@@ -51,12 +51,12 @@ func (s *MetafieldServiceOp) ListAllShopMetafields(ctx context.Context) ([]model
 							type
 						}
 					}
-				}	  
+				}
 			}
 		}
 `
 
-	res := []model.Metafield{}
+	res := []*model.Metafield{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
 		return nil, fmt.Errorf("bulk query: %w", err)
@@ -65,7 +65,7 @@ func (s *MetafieldServiceOp) ListAllShopMetafields(ctx context.Context) ([]model
 	return res, nil
 }
 
-func (s *MetafieldServiceOp) ListShopMetafieldsByNamespace(ctx context.Context, namespace string) ([]model.Metafield, error) {
+func (s *MetafieldServiceOp) ListShopMetafieldsByNamespace(ctx context.Context, namespace string) ([]*model.Metafield, error) {
 	q := `
 		{
 			shop{
@@ -84,13 +84,13 @@ func (s *MetafieldServiceOp) ListShopMetafieldsByNamespace(ctx context.Context, 
 							type
 						}
 					}
-				}	  
+				}
 			}
 		}
 `
 	q = strings.ReplaceAll(q, "$namespace", namespace)
 
-	res := []model.Metafield{}
+	res := []*model.Metafield{}
 	err := s.client.BulkOperation.BulkQuery(ctx, q, &res)
 	if err != nil {
 		return nil, fmt.Errorf("bulk query: %w", err)
