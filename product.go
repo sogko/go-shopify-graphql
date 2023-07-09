@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/product_service.go -package=mock . ProductService
@@ -286,7 +286,7 @@ func (s *ProductServiceOp) getPage(ctx context.Context, id string, cursor string
 	out := struct {
 		Product *model.Product `json:"product"`
 	}{}
-	err := s.client.gql.QueryString(ctx, q, vars, &out)
+	err := s.client.QueryString(ctx, q, vars, &out)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
@@ -301,7 +301,7 @@ func (s *ProductServiceOp) Create(ctx context.Context, product model.ProductInpu
 		"input": product,
 	}
 
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return nil, fmt.Errorf("mutation: %w", err)
 	}
@@ -319,7 +319,7 @@ func (s *ProductServiceOp) Update(ctx context.Context, product model.ProductInpu
 	vars := map[string]interface{}{
 		"input": product,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}
@@ -337,7 +337,7 @@ func (s *ProductServiceOp) Delete(ctx context.Context, product model.ProductDele
 	vars := map[string]interface{}{
 		"input": product,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}
@@ -356,7 +356,7 @@ func (s *ProductServiceOp) VariantsBulkCreate(ctx context.Context, id string, in
 		"productId": id,
 		"variants":  input,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}
@@ -375,7 +375,7 @@ func (s *ProductServiceOp) VariantsBulkUpdate(ctx context.Context, id string, in
 		"productId": id,
 		"variants":  input,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}
@@ -394,7 +394,7 @@ func (s *ProductServiceOp) VariantsBulkReorder(ctx context.Context, id string, i
 		"productId": id,
 		"positions": input,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}

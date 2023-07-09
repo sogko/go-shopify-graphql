@@ -1,7 +1,7 @@
 package main
 
 import (
-	shopify "github.com/r0busta/go-shopify-graphql/v7"
+	"github.com/vinhluan/go-shopify-graphql"
 )
 
 func defaultClient() *shopify.Client {

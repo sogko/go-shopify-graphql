@@ -3,7 +3,6 @@ package shopify
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -13,11 +12,12 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/goccy/go-json"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
-	"github.com/r0busta/go-shopify-graphql/v7/rand"
-	"github.com/r0busta/go-shopify-graphql/v7/utils"
 	log "github.com/sirupsen/logrus"
+	"github.com/vinhluan/go-shopify-graphql/model"
+	"github.com/vinhluan/go-shopify-graphql/rand"
+	"github.com/vinhluan/go-shopify-graphql/utils"
 	"gopkg.in/guregu/null.v4"
 )
 
@@ -64,7 +64,7 @@ func (s *BulkOperationServiceOp) PostBulkQuery(ctx context.Context, query string
 		"query": null.StringFrom(query),
 	}
 
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return nil, fmt.Errorf("error posting bulk query: %w", err)
 	}
@@ -82,7 +82,7 @@ func (s *BulkOperationServiceOp) GetCurrentBulkQuery(ctx context.Context) (*mode
 			model.BulkOperation
 		}
 	}
-	err := s.client.gql.Query(ctx, &q, nil)
+	err := s.client.Query(ctx, &q, nil)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
@@ -158,7 +158,7 @@ func (s *BulkOperationServiceOp) CancelRunningBulkQuery(ctx context.Context) err
 			"id": operationID,
 		}
 
-		err = s.client.gql.Mutate(ctx, &m, vars)
+		err = s.client.Mutate(ctx, &m, vars)
 		if err != nil {
 			return fmt.Errorf("mutation: %w", err)
 		}

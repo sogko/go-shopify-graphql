@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/inventory_service.go -package=mock . InventoryService
@@ -44,7 +44,7 @@ func (s *InventoryServiceOp) Update(ctx context.Context, id string, input model.
 		"id":    id,
 		"input": input,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}
@@ -62,7 +62,7 @@ func (s *InventoryServiceOp) Adjust(ctx context.Context, locationID string, inpu
 		"locationId":               locationID,
 		"inventoryItemAdjustments": input,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}
@@ -80,7 +80,7 @@ func (s *InventoryServiceOp) ActivateInventory(ctx context.Context, locationID s
 		"itemID":     id,
 		"locationId": locationID,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}

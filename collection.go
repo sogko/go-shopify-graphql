@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
 	log "github.com/sirupsen/logrus"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/collection_service.go -package=mock . CollectionService
@@ -128,7 +128,7 @@ func (s *CollectionServiceOp) getPage(ctx context.Context, id string, cursor str
 	out := struct {
 		Collection *model.Collection `json:"collection"`
 	}{}
-	err := s.client.gql.QueryString(ctx, q, vars, &out)
+	err := s.client.QueryString(ctx, q, vars, &out)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
@@ -153,7 +153,7 @@ func (s *CollectionServiceOp) Create(ctx context.Context, collection model.Colle
 	vars := map[string]interface{}{
 		"input": collection,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return nil, fmt.Errorf("mutation: %w", err)
 	}
@@ -171,7 +171,7 @@ func (s *CollectionServiceOp) Update(ctx context.Context, collection model.Colle
 	vars := map[string]interface{}{
 		"input": collection,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}

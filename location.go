@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/location_service.go -package=mock . LocationService
@@ -33,7 +33,7 @@ func (s *LocationServiceOp) Get(ctx context.Context, id string) (*model.Location
 	var out struct {
 		*model.Location `json:"location"`
 	}
-	err := s.client.gql.QueryString(ctx, q, vars, &out)
+	err := s.client.QueryString(ctx, q, vars, &out)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}

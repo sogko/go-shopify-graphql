@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/variant_service.go -package=mock . VariantService
@@ -30,7 +30,7 @@ func (s *VariantServiceOp) Update(ctx context.Context, variant model.ProductVari
 	vars := map[string]interface{}{
 		"input": variant,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}

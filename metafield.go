@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
 	log "github.com/sirupsen/logrus"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/metafield_service.go -package=mock . MetafieldService
@@ -110,7 +110,7 @@ func (s *MetafieldServiceOp) GetShopMetafieldByKey(ctx context.Context, namespac
 		"key":       key,
 	}
 
-	err := s.client.gql.Query(ctx, &q, vars)
+	err := s.client.Query(ctx, &q, vars)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
@@ -135,7 +135,7 @@ func (s *MetafieldServiceOp) Delete(ctx context.Context, metafield model.Metafie
 	vars := map[string]interface{}{
 		"input": metafield,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}

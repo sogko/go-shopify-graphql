@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/r0busta/go-shopify-graphql-model/v3/graph/model"
-	"github.com/r0busta/graphql"
+	graphql "github.com/vinhluan/go-graphql-client"
+	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/order_service.go -package=mock . OrderService
@@ -265,7 +265,7 @@ func (s *OrderServiceOp) Get(ctx context.Context, id graphql.ID) (*model.Order, 
 	out := struct {
 		Order *model.Order `json:"node"`
 	}{}
-	err := s.client.gql.QueryString(ctx, q, vars, &out)
+	err := s.client.QueryString(ctx, q, vars, &out)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
@@ -392,7 +392,7 @@ func (s *OrderServiceOp) ListAfterCursor(ctx context.Context, opts ListOptions) 
 			} `json:"pageInfo,omitempty"`
 		} `json:"orders,omitempty"`
 	}{}
-	err := s.client.gql.QueryString(ctx, q, vars, &out)
+	err := s.client.QueryString(ctx, q, vars, &out)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("query: %w", err)
 	}
@@ -417,7 +417,7 @@ func (s *OrderServiceOp) Update(ctx context.Context, input model.OrderInput) err
 	vars := map[string]interface{}{
 		"input": input,
 	}
-	err := s.client.gql.Mutate(ctx, &m, vars)
+	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
 		return fmt.Errorf("mutation: %w", err)
 	}

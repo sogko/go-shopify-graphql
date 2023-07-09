@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/r0busta/graphql"
+	"github.com/vinhluan/go-graphql-client"
 )
 
 type Option func(shopClient *Client)

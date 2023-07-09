@@ -1,5 +1,7 @@
 # go-shopify-graphql
 
+**Preface:** This is a fork from https://github.com/r0busta/go-shopify-graphql which extended features (retry capability, optionally set timeout, transport)
+
 A simple client using the Shopify GraphQL Admin API.
 
 ## Getting started
@@ -23,7 +25,7 @@ import (
 	"context"
 	"fmt"
 
-	shopify "github.com/r0busta/go-shopify-graphql/v7"
+	shopify "github.com/vinhluan/go-shopify-graphql"
 )
 
 func main() {
