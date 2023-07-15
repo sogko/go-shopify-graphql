@@ -204,7 +204,8 @@ func (s *BulkOperationServiceOp) BulkQuery(ctx context.Context, query string, ou
 	}
 
 	if url == nil || *url == "" {
-		return fmt.Errorf("Operation result URL is empty")
+		// No results
+		return nil
 	}
 
 	filename := fmt.Sprintf("%s%s", rand.String(10), ".jsonl")
