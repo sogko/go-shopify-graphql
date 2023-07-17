@@ -24,6 +24,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	shopify "github.com/vinhluan/go-shopify-graphql"
 )
@@ -31,6 +32,12 @@ import (
 func main() {
 	// Create client
 	client := shopify.NewDefaultClient()
+
+	// Or if you are a fan of options
+	client = shopify.NewClient(os.Getenv("STORE_NAME"),
+		shopify.WithToken(os.Getenv("STORE_PASSWORD")),
+		shopify.WithVersion("2023-07"),
+		shopify.WithRetries(5))
 
 	// Get all collections
 	collections, err := client.Collection.ListAll(context.Background())
