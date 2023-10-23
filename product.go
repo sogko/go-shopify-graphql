@@ -15,10 +15,8 @@ type ProductService interface {
 
 	Get(ctx context.Context, id string) (*model.Product, error)
 
-	Create(ctx context.Context, product model.ProductInput) (*string, error)
-
-	Update(ctx context.Context, product model.ProductInput) error
-
+	Create(ctx context.Context, product model.ProductInput, media []model.CreateMediaInput) (*model.Product, error)
+	Update(ctx context.Context, product model.ProductInput) (*model.Product, error)
 	Delete(ctx context.Context, product model.ProductDeleteInput) error
 
 	VariantsBulkCreate(ctx context.Context, id string, input []model.ProductVariantsBulkInput) error
@@ -33,25 +31,15 @@ type ProductServiceOp struct {
 var _ ProductService = &ProductServiceOp{}
 
 type mutationProductCreate struct {
-	ProductCreateResult struct {
-		Product *struct {
-			ID string `json:"id,omitempty"`
-		} `json:"product,omitempty"`
-
-		UserErrors []model.UserError `json:"userErrors,omitempty"`
-	} `graphql:"productCreate(input: $input)" json:"productCreate"`
+	ProductCreateResult model.ProductCreatePayload `graphql:"productCreate(input: $input, media: $media)" json:"productCreate"`
 }
 
 type mutationProductUpdate struct {
-	ProductUpdateResult struct {
-		UserErrors []model.UserError `json:"userErrors,omitempty"`
-	} `graphql:"productUpdate(input: $input)" json:"productUpdate"`
+	ProductUpdateResult model.ProductUpdatePayload `graphql:"productUpdate(input: $input)" json:"productUpdate"`
 }
 
 type mutationProductDelete struct {
-	ProductDeleteResult struct {
-		UserErrors []model.UserError `json:"userErrors,omitempty"`
-	} `graphql:"productDelete(input: $input)" json:"productDelete"`
+	ProductDeleteResult model.ProductDeletePayload `graphql:"productDelete(input: $input)" json:"productDelete"`
 }
 
 type mutationProductVariantsBulkCreate struct {
@@ -294,11 +282,12 @@ func (s *ProductServiceOp) getPage(ctx context.Context, id string, cursor string
 	return out.Product, nil
 }
 
-func (s *ProductServiceOp) Create(ctx context.Context, product model.ProductInput) (*string, error) {
+func (s *ProductServiceOp) Create(ctx context.Context, product model.ProductInput, media []model.CreateMediaInput) (*model.Product, error) {
 	m := mutationProductCreate{}
 
 	vars := map[string]interface{}{
 		"input": product,
+		"media": media,
 	}
 
 	err := s.client.Mutate(ctx, &m, vars)
@@ -310,10 +299,10 @@ func (s *ProductServiceOp) Create(ctx context.Context, product model.ProductInpu
 		return nil, fmt.Errorf("%+v", m.ProductCreateResult.UserErrors)
 	}
 
-	return &m.ProductCreateResult.Product.ID, nil
+	return m.ProductCreateResult.Product, nil
 }
 
-func (s *ProductServiceOp) Update(ctx context.Context, product model.ProductInput) error {
+func (s *ProductServiceOp) Update(ctx context.Context, product model.ProductInput) (*model.Product, error) {
 	m := mutationProductUpdate{}
 
 	vars := map[string]interface{}{
@@ -321,14 +310,14 @@ func (s *ProductServiceOp) Update(ctx context.Context, product model.ProductInpu
 	}
 	err := s.client.Mutate(ctx, &m, vars)
 	if err != nil {
-		return fmt.Errorf("mutation: %w", err)
+		return nil, fmt.Errorf("mutation: %w", err)
 	}
 
 	if len(m.ProductUpdateResult.UserErrors) > 0 {
-		return fmt.Errorf("%+v", m.ProductUpdateResult.UserErrors)
+		return nil, fmt.Errorf("%+v", m.ProductUpdateResult.UserErrors)
 	}
 
-	return nil
+	return m.ProductUpdateResult.Product, nil
 }
 
 func (s *ProductServiceOp) Delete(ctx context.Context, product model.ProductDeleteInput) error {

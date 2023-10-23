@@ -40,6 +40,7 @@ type Client struct {
 	Location      LocationService
 	Metafield     MetafieldService
 	BulkOperation BulkOperationService
+	Webhook       WebhookService
 }
 
 func NewClient(shopName string, opts ...Option) *Client {
@@ -76,6 +77,7 @@ func NewClient(shopName string, opts ...Option) *Client {
 	c.Location = &LocationServiceOp{client: c}
 	c.Metafield = &MetafieldServiceOp{client: c}
 	c.BulkOperation = &BulkOperationServiceOp{client: c}
+	c.Webhook = &WebhookServiceOp{client: c}
 
 	return c
 }
