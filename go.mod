@@ -1,4 +1,4 @@
-module github.com/vinhluan/go-shopify-graphql
+module github.com/sogko/go-shopify-graphql
 
 go 1.19
 
