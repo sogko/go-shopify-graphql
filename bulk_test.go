@@ -67,7 +67,7 @@ func TestBulkOperationEndToEnd(t *testing.T) {
 			assert.Greater(t, len(res), 1)
 			assert.NotZero(t, res[0].ID)
 
-			assert.Greater(t, len(res[0].Variants.Edges), 1)
+			assert.Equal(t, len(res[0].Variants.Edges), 1)
 			assert.NotZero(t, res[0].Variants.Edges[0].Node.ID)
 
 			assert.Equal(t, len(res[0].Variants.Edges[0].Node.Media.Edges), 1)
