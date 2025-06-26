@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/vinhluan/go-shopify-graphql/model"
+	"github.com/sogko/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/metafield_service.go -package=mock . MetafieldService

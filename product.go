@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vinhluan/go-shopify-graphql/model"
+	"github.com/sogko/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/product_service.go -package=mock . ProductService

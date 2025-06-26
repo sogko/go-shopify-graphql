@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/vinhluan/go-graphql-client"
-	"github.com/vinhluan/go-shopify-graphql/model"
+	"github.com/sogko/go-shopify-graphql/model"
 )
 
 //go:generate mockgen -destination=./mock/order_service.go -package=mock . OrderService
