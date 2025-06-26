@@ -8,8 +8,8 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/vinhluan/go-shopify-graphql/model"
-	shopify "github.com/vinhluan/go-shopify-graphql"
+	model "github.com/sogko/go-shopify-graphql/model"
+	shopify "github.com/sogko/go-shopify-graphql"
 	graphql "github.com/r0busta/graphql"
 )
 

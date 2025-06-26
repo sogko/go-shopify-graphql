@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vinhluan/go-shopify-graphql"
+	"github.com/sogko/go-shopify-graphql"
 )
 
 func products(client *shopify.Client) {

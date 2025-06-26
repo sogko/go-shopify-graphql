@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vinhluan/go-shopify-graphql"
-	"github.com/vinhluan/go-shopify-graphql/model"
+	"github.com/sogko/go-shopify-graphql"
+	"github.com/sogko/go-shopify-graphql/model"
 )
 
 func bulk(client *shopify.Client) {

@@ -5,10 +5,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/sogko/go-shopify-graphql"
+	"github.com/sogko/go-shopify-graphql/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/vinhluan/go-shopify-graphql"
-	"github.com/vinhluan/go-shopify-graphql/model"
 )
 
 func TestBulkOperationEndToEnd(t *testing.T) {

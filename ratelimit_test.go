@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sogko/go-shopify-graphql"
 	"github.com/stretchr/testify/assert"
-	"github.com/vinhluan/go-shopify-graphql"
 )
 
 func TestCalculateWaitTime(t *testing.T) {
